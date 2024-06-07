@@ -1,4 +1,4 @@
-﻿#include "Graph.h"﻿
+﻿#include "Graph.h"
 
 int main() {
 	Graph<int, double> graph1;
@@ -35,12 +35,15 @@ int main() {
 	std::cout << graph1.degree(3) << std::endl;
 	std::cout << graph1.degree(4) << std::endl;
 	std::cout << "______________________________" << std::endl;
+	graph1.add_vertex(1);
 	graph1.add_edge(2, 4, 5);
-	graph1.add_edge(4, 3, 6);
+	graph1.add_edge(2, 1, 5);
+	graph1.add_edge(1, 3, 6);
 	auto walk = graph1.walk(2);
 	for (auto i : walk) {
-		std::cout << i << std::endl;
+		std::cout << i << "->";
 	}
+	std::cout << std::endl;
 	std::cout << "______________________________" << std::endl;
 	graph1.add_vertex(5);
 	graph1.add_vertex(6);
@@ -59,7 +62,7 @@ int main() {
 	for (auto i : graph1.vertices()) {
 		std::cout << i << ": ";
 		for (auto j : graph1.vertices()) {
-			auto path = graph1.shortest_max_path(i, j);
+			auto path = graph1.shortest_path(i, j);
 			auto distance = 0;
 			for (auto& d : path) {
 				distance += d.distance;

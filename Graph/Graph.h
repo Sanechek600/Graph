@@ -5,8 +5,8 @@
 #include <algorithm>
 #include <iterator>
 #include <iostream>
-#include <queue>
 #include <stack>
+#include <set>
 
 template<typename Vertex, typename Distance = double>
 class Graph {
@@ -15,6 +15,7 @@ public:
         Vertex from;
         Vertex to;
         Distance distance;
+        Edge() : from(Vertex()), to(Vertex()), distance(Distance()) {}
         Edge(const Vertex& f, const Vertex& t, const Distance& d) : from(f), to(t), distance(d) {}
     };
 private:
@@ -123,7 +124,7 @@ public:
         std::unordered_map<Vertex, Edge> predecessor;
         std::set<std::pair<Distance, Vertex>> pq;
 
-        for (const Vertex& v : _vertices) {
+        for (const Vertex& v : vertices()) {
             distance[v] = std::numeric_limits<Distance>::infinity();
             predecessor[v] = Edge();
         }
@@ -193,13 +194,17 @@ Vertex find_optimal_warehouse(const Graph<Vertex, Distance>& graph) {
     Vertex optimal_warehouse = Vertex();
     Distance min_longest_distance = std::numeric_limits<Distance>::max();
     for (const auto& trade_point : trade_points) {
-        Distance longest_distance = 0;
+        Distance longest_distance = std::numeric_limits<Distance>::min();
         for (const auto& destination : trade_points) {
+            Distance comb_distance = Distance();
             if (trade_point != destination) {
                 std::vector<typename Graph<Vertex, Distance>::Edge> shortest_paths = graph.shortest_path(trade_point, destination);
                 for (const auto& edge : shortest_paths) {
-                    longest_distance = (edge.distance > longest_distance) ? edge.distance : longest_distance;
+                    comb_distance += edge.distance;
                 }
+            }
+            if (longest_distance < comb_distance) {
+                longest_distance = comb_distance;
             }
         }
         if (longest_distance < min_longest_distance) {
